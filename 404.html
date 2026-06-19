@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Oráculo</title>
+    <base href="/oraculo-del-gol/" />
+    <link href="_framework/dotnet.1lo82i9jsr.js" rel="preload" as="script" fetchpriority="high" crossorigin="anonymous" integrity="sha256-i7dI3mFUZyTwcIiwy2bg11ATwdq9+ab83Kl21rzc5us=" />
+    <link rel="stylesheet" href="css/bootstrap.css" />
+    <link rel="stylesheet" href="css/app.css" />
+    <link rel="stylesheet" href="css/flag-icons.css" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link href="Oraculo.Web.styles.css" rel="stylesheet" />
+    <script type="importmap">{
+  "imports": {
+    "./_framework/blazor.webassembly.js": "./_framework/blazor.webassembly.958z1vx7fr.js",
+    "./_framework/dotnet.js": "./_framework/dotnet.1lo82i9jsr.js",
+    "./_framework/dotnet.native.js": "./_framework/dotnet.native.ikrs475e5v.js",
+    "./_framework/dotnet.runtime.js": "./_framework/dotnet.runtime.a6jcqbs390.js"
+  },
+  "scopes": {},
+  "integrity": {
+    "./_framework/blazor.webassembly.958z1vx7fr.js": "sha256-A59Tr9HqEhHMu8kU7kruLI9ayw5MRS6Lvc6z7jCbghk=",
+    "./_framework/blazor.webassembly.js": "sha256-A59Tr9HqEhHMu8kU7kruLI9ayw5MRS6Lvc6z7jCbghk=",
+    "./_framework/dotnet.1lo82i9jsr.js": "sha256-i7dI3mFUZyTwcIiwy2bg11ATwdq9+ab83Kl21rzc5us=",
+    "./_framework/dotnet.js": "sha256-i7dI3mFUZyTwcIiwy2bg11ATwdq9+ab83Kl21rzc5us=",
+    "./_framework/dotnet.native.ikrs475e5v.js": "sha256-kkp5wX0htwkBcZt5WmEiKmhBqjqdCJtGc+koldfyoDQ=",
+    "./_framework/dotnet.native.js": "sha256-kkp5wX0htwkBcZt5WmEiKmhBqjqdCJtGc+koldfyoDQ=",
+    "./_framework/dotnet.runtime.a6jcqbs390.js": "sha256-7i3usfTrnzC/9qWO4si5Bw4w7D9fUSnSBdhQ47blX2M=",
+    "./_framework/dotnet.runtime.js": "sha256-7i3usfTrnzC/9qWO4si5Bw4w7D9fUSnSBdhQ47blX2M="
+  }
+}</script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div id="preloader">
+            <div class="loader-container">
+                <svg class="world-cup-icon" viewBox="0 0 100 100" width="100" height="100">
+                    <circle cx="50" cy="50" r="45" fill="#0d1b2a" stroke="#4cc9f0" stroke-width="4" />
+                    <path d="M 25 50 Q 50 25 75 50" fill="none" stroke="#f72585" stroke-width="3" />
+                    <path d="M 25 50 Q 50 75 75 50" fill="none" stroke="#7209b7" stroke-width="3" />
+                </svg>
+                <h2>Oráculo del Gol</h2>
+                <p>Cargando predicciones...</p>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="." class="reload">Reload</a>
+        <span class="dismiss">🗙</span>
+    </div>
+    <script src="js/bootstrap.bundle.js"></script>
+    <script src="_framework/blazor.webassembly.958z1vx7fr.js" autostart="false"></script>
+    <script src="js/telegram-interop.js"></script>
+    <script>
+        Blazor.start().then(() => {
+            const preloader = document.getElementById('preloader');
+            if (preloader) {
+                preloader.style.opacity = '0';
+                setTimeout(() => {
+                    preloader.style.display = 'none';
+                }, 500);
+            }
+        });
+    </script>
+</body>
+
+</html>
