@@ -1,0 +1,48 @@
+name: Deploy Blazor Frontend to GitHub Pages
+
+on:
+  push:
+    branches: [ master ] # Se ejecutará cada vez que subas cambios a la rama main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Descargar el código del repositorio
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # 2. Instalar el SDK de .NET 10
+    - name: Setup .NET 10
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+
+    # 3. Publicar el proyecto optimizado para producción
+    - name: Publish Blazor Project
+      run: dotnet publish -c Release -o release
+
+    # 4. Modificar el base href dinámicamente para GitHub Pages
+    # Cambia "oraculo-del-gol" por el nombre exacto de tu repositorio en GitHub
+    - name: Change base href
+      run: sed -i 's#<base href="/" />#<base href="/oraculo-del-gol/" />#g' release/wwwroot/index.html
+    
+    # CAMBIA "Web/TuProyectoWeb.csproj" por la ruta de tu proyecto Blazor
+    - name: Publish Blazor Project
+      run: dotnet publish Oraculo.Web/Oraculo.Web.csproj -c Release -o release
+
+    # 5. El truco del 404 para las rutas de Blazor
+    - name: Copy index.html to 404.html
+      run: cp release/wwwroot/index.html release/wwwroot/404.html
+
+    # 6. Crear el archivo .nojekyll para que GitHub no bloquee carpetas como _framework
+    - name: Add .nojekyll file
+      run: touch release/wwwroot/.nojekyll
+
+    # 7. Desplegar los archivos compilados a la rama gh-pages
+    - name: Deploy to GitHub Pages
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        folder: release/wwwroot # Carpeta que contiene los archivos finales
+        branch: gh-pages # GitHub Pages leerá esta rama automáticamente
