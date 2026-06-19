@@ -1,0 +1,168 @@
+:root {
+    --bg: var(--tg-theme-bg-color, #ffffff);
+    --text: var(--tg-theme-text-color, #1a1a1a);
+    --hint: var(--tg-theme-hint-color, #999999);
+    --link: var(--tg-theme-link-color, #2678b6);
+    --btn-bg: var(--tg-theme-button-color, #3390ec);
+    --btn-text: var(--tg-theme-button-text-color, #ffffff);
+    --secondary-bg: var(--tg-theme-secondary-bg-color, #f0f0f0);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    padding: 12px;
+}
+
+#preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #0b0c10;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease;
+}
+
+.loader-container {
+    text-align: center;
+}
+
+.world-cup-icon {
+    animation: spin 2s linear infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes spin {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.container {
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+.card {
+    background: var(--secondary-bg);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+}
+
+    .card h2 {
+        font-size: 1.4rem;
+        margin-bottom: 4px;
+    }
+
+    .card h3 {
+        font-size: 1.1rem;
+        margin-bottom: 12px;
+        color: var(--link);
+    }
+
+.subtitle {
+    color: var(--hint);
+    font-size: 0.9rem;
+}
+
+label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--hint);
+    margin: 10px 0 4px;
+    font-weight: 600;
+}
+
+input[type="text"], select, textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--hint);
+    border-radius: 8px;
+    font-size: 1rem;
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+}
+
+    input:focus, select:focus, textarea:focus {
+        border-color: var(--btn-bg);
+    }
+
+.radio-group {
+    display: flex;
+    gap: 16px;
+    margin-top: 4px;
+}
+
+    .radio-group label {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-weight: normal;
+        color: var(--text);
+    }
+
+button, .btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin: 6px 0;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+    button:active {
+        opacity: 0.7;
+    }
+
+.btn-primary {
+    background: var(--btn-bg);
+    color: var(--btn-text);
+}
+
+.btn-warning {
+    background: #ff9500;
+    color: #fff;
+}
+
+.btn-success {
+    background: #34c759;
+    color: #fff;
+}
+
+.btn-info {
+    background: #5ac8fa;
+    color: #fff;
+}
+
+.btn-secondary {
+    background: var(--hint);
+    color: #fff;
+}
+
+.resultado {
+    background: #e8f5e9;
+    border-left: 4px solid #34c759;
+}
+
+#blazor-error-ui {
+    display: none;
+}

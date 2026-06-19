@@ -1,0 +1,120 @@
+﻿@using Oraculo.Web.Models
+
+<div class="match-card @(_isExpanded ? "expanded" : "") @(Match.IsDone ? "done" : "")" @onclick="ToggleAccordion">
+
+    <div class="match-header">
+        <div class="team-container">
+            <div class="flag-score">
+                <span class="prediction">@Match.Prediction.HomeGoals</span>
+                <div class="fi fi-@Match.Home.Flag"></div>
+                @if (Match.IsDone)
+                {
+                    <span class="score">@Match.Home.Goals</span>
+                }
+            </div>
+            <span class="team-name">@Match.Home.Name</span>
+        </div>
+
+        <div class="separator-container">
+            @if (GetMatchStatus() == "AHORA")
+            {
+                <div class="badge-live">@Match.Scheduling.ToString("HH:mm")</div>
+            }
+            else
+            {
+                <div class="match-status">@Match.Scheduling.ToString("HH:mm")</div>
+            }
+            @* <div class="schedule-match">14:00</div> *@
+        </div>
+
+        <div class="team-container">
+            <div class="flag-score">
+                @if (Match.IsDone)
+                {
+                    <span class="score">@Match.Away.Goals</span>
+                }
+                <div class="fi fi-@Match.Away.Flag"></div>
+                <span class="prediction">@Match.Prediction.AwayGoals</span>
+            </div>
+            <span class="team-name">@Match.Away.Name</span>
+        </div>
+    </div>
+
+    @* <div class="match-time">
+        🕐 @Match.MatchTime.ToString("HH:mm") hrs
+        @if (IsMatchStarted)
+        {
+            <span class="badge-live">EN CURSO</span>
+        }
+    </div> *@
+
+    @if (_isExpanded && !Match.IsDone && !IsMatchStarted)
+    {
+        <div class="accordion-body" @onclick:stopPropagation="true">
+            <div class="score-inputs">
+                <div class="score-field">
+                    <label>@Match.Home.Name</label>
+                    <input type="number" min="0" max="99" @bind="_homeScore" placeholder="0" />
+                </div>
+
+                <span class="score-divider">-</span>
+
+                <div class="score-field">
+                    <label>@Match.Away.Name</label>
+                    <input type="number" min="0" max="99" @bind="_awayScore" placeholder="0" />
+                </div>
+            </div>
+
+            <button class="btn-save" @onclick="GuardarScore" disabled="@(!IsValid)">
+                💾 Guardar
+            </button>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public MatchPredictionModel Match { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<MatchPredictionModel> OnScoreSaved { get; set; }
+
+    private bool _isExpanded;
+    private int? _homeScore;
+    private int? _awayScore;
+
+    private bool IsMatchStarted => DateTime.Now >= Match.Scheduling;
+    private bool IsValid => _homeScore.HasValue && _awayScore.HasValue && _homeScore >= 0 && _awayScore >= 0;
+
+    private string GetMatchStatus()
+    {
+        if (Match.IsDone)
+            return "FIN";
+
+        if (IsMatchStarted)
+            return "AHORA";
+
+        return "VS.";
+    }
+
+    private void ToggleAccordion()
+    {
+        if (Match.IsDone || IsMatchStarted)
+            return;
+
+        _isExpanded = !_isExpanded;
+    }
+
+    private async Task GuardarScore()
+    {
+        if (!IsValid || Match.IsDone || IsMatchStarted)
+            return;
+
+        Match.Home.Goals = _homeScore;
+        Match.Away.Goals = _awayScore;
+        Match.IsDone = true;
+        _isExpanded = false;
+
+        await OnScoreSaved.InvokeAsync(Match);
+    }
+}

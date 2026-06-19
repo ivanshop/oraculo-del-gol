@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Oraculo.Web/Oraculo.Web.csproj" />
+  <Project Path="Oraculo.Api/Oraculo.Api.csproj" />
+  <Project Path="Oraculo.Application/Oraculo.Application.csproj" />
+  <Project Path="Oraculo.Infrastructure/Oraculo.Infrastructure.csproj" />
+</Solution>

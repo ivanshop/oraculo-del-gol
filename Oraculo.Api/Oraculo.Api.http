@@ -1,0 +1,14 @@
+@HostAddress = https://localhost:7064
+
+GET {{HostAddress}}/matches/2026-06-17
+Accept: application/json
+
+###
+
+GET {{HostAddress}}/predictions/matches/1/seers/6
+Accept: application/json
+
+###
+
+GET {{HostAddress}}/predictions/db-path
+Accept: application/json
