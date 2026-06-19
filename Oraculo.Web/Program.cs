@@ -8,7 +8,7 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7064") });
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://evancho.duckdns.org") });
 builder.Services.AddScoped<OraculoService>();
 builder.Services.AddScoped<TelegramHelper>();
 
