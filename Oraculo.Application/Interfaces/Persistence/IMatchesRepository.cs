@@ -4,5 +4,5 @@ namespace Oraculo.Application.Interfaces.Persistence;
 
 public interface IMatchesRepository
 {
-    Task<List<MatchResponse>> GetMatchesByDate(DateTime date);
+    Task<List<MatchResponse>> GetMatchesByDate(string userTelegramId, DateTime date);
 }

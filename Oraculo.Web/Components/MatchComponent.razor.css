@@ -42,7 +42,7 @@
 
 .flag-score {
     border-radius: 10px;
-    background-color: #E8F5FF;
+    /*background-color: #E8F5FF;*/
     display: flex;
     align-items: center;
     justify-content: center;

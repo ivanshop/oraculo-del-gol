@@ -15,6 +15,7 @@ public static class DependencyInjection
         services.AddDbContext<OraculoContext>(options => options.UseSqlite(connectionString));
         services.AddScoped<IPredictionsRepository, PredictionsRepository>();
         services.AddScoped<IMatchesRepository, MatchesRepository>();
+        services.AddScoped<ISeersRepository, SeersRepository>();
 
         return services;
     }

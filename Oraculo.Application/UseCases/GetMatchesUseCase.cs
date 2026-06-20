@@ -13,10 +13,10 @@ public class GetMatchesUseCase : IGetMatchesIdUseCase
         _matchesRepository = matchesRepository;
     }
 
-    public async Task<Result<List<MatchResponse>>> ExecuteAsync(DateOnly? date = null)
+    public async Task<Result<List<MatchResponse>>> ExecuteAsync(string userTelegramId, DateOnly? date = null)
     {
         var currentDate = date is null ? DateTime.Now : date.Value.ToDateTime(TimeOnly.MinValue);
-        var matches = await _matchesRepository.GetMatchesByDate(currentDate);
+        var matches = await _matchesRepository.GetMatchesByDate(userTelegramId, currentDate);
         if (matches.Any()) return Result<List<MatchResponse>>.Success(CodeResponseType.Ok, matches);
         return Result<List<MatchResponse>>.Failure(CodeResponseType.NotFound, "Not found matches.");
     }

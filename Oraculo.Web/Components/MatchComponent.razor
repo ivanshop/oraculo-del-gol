@@ -5,7 +5,7 @@
     <div class="match-header">
         <div class="team-container">
             <div class="flag-score">
-                <span class="prediction">@Match.Prediction.HomeGoals</span>
+                <span class="prediction">@(Match.Prediction.HomeGoals?.ToString() ?? "-")</span>
                 <div class="fi fi-@Match.Home.Flag"></div>
                 @if (Match.IsDone)
                 {
@@ -24,7 +24,6 @@
             {
                 <div class="match-status">@Match.Scheduling.ToString("HH:mm")</div>
             }
-            @* <div class="schedule-match">14:00</div> *@
         </div>
 
         <div class="team-container">
@@ -34,19 +33,11 @@
                     <span class="score">@Match.Away.Goals</span>
                 }
                 <div class="fi fi-@Match.Away.Flag"></div>
-                <span class="prediction">@Match.Prediction.AwayGoals</span>
+                <span class="prediction">@(Match.Prediction.AwayGoals?.ToString() ?? "-")</span>
             </div>
             <span class="team-name">@Match.Away.Name</span>
         </div>
     </div>
-
-    @* <div class="match-time">
-        🕐 @Match.MatchTime.ToString("HH:mm") hrs
-        @if (IsMatchStarted)
-        {
-            <span class="badge-live">EN CURSO</span>
-        }
-    </div> *@
 
     @if (_isExpanded && !Match.IsDone && !IsMatchStarted)
     {
@@ -54,19 +45,19 @@
             <div class="score-inputs">
                 <div class="score-field">
                     <label>@Match.Home.Name</label>
-                    <input type="number" min="0" max="99" @bind="_homeScore" placeholder="0" />
+                    <input type="number" min="0" max="99" @bind="_homeScore" @bind:event="oninput" placeholder="0" />
                 </div>
 
                 <span class="score-divider">-</span>
 
                 <div class="score-field">
                     <label>@Match.Away.Name</label>
-                    <input type="number" min="0" max="99" @bind="_awayScore" placeholder="0" />
+                    <input type="number" min="0" max="99" @bind="_awayScore" @bind:event="oninput" placeholder="0" />
                 </div>
             </div>
 
-            <button class="btn-save" @onclick="GuardarScore" disabled="@(!IsValid)">
-                💾 Guardar
+            <button class="btn-save" @onclick="AssignScore" disabled="@(!IsValid)">
+                Asignar Pronóstico
             </button>
         </div>
     }
@@ -85,6 +76,12 @@
 
     private bool IsMatchStarted => DateTime.Now >= Match.Scheduling;
     private bool IsValid => _homeScore.HasValue && _awayScore.HasValue && _homeScore >= 0 && _awayScore >= 0;
+
+    protected override void OnParametersSet()
+    {
+        _homeScore = Match.Prediction.HomeGoals;
+        _awayScore = Match.Prediction.AwayGoals;
+    }
 
     private string GetMatchStatus()
     {
@@ -105,15 +102,15 @@
         _isExpanded = !_isExpanded;
     }
 
-    private async Task GuardarScore()
+    private async Task AssignScore()
     {
         if (!IsValid || Match.IsDone || IsMatchStarted)
             return;
 
-        Match.Home.Goals = _homeScore;
-        Match.Away.Goals = _awayScore;
-        Match.IsDone = true;
-        _isExpanded = false;
+        Match.Prediction.HomeGoals = _homeScore;
+        Match.Prediction.AwayGoals = _awayScore;
+        Match.IsDone = Match.Scheduling <= DateTime.Now;
+        _isExpanded = Match.Scheduling <= DateTime.Now;
 
         await OnScoreSaved.InvokeAsync(Match);
     }

@@ -1,6 +1,7 @@
 ﻿window.TelegramInterop = {
     isAvailable: function () {
-        return !!(window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData);
+        // return !!(window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData);
+        return !!(window.Telegram && window.Telegram.WebApp);
     },
     ready: function () {
         if (this.isAvailable()) {

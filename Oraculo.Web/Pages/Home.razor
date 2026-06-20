@@ -22,7 +22,7 @@
         }
         else if (!_matches.Any())
         {
-            <p class="text-center py-3">No hay partidos programados para hoy</p>
+            <p class="text-center py-3">No hay partidos programados para hoy.</p>
         }
         else
         {
@@ -32,166 +32,113 @@
             }
         }
     </div>
-
-    @* 
-    <div class="card">
-        <h3>🎮 Controles nativos de Telegram</h3>
-        <button class="btn btn-primary" @onclick="MostrarAlerta">Mostrar Alerta Nativa</button>
-        <button class="btn btn-warning" @onclick="MostrarConfirmacion">Mostrar Confirmación</button>
-        <button class="btn btn-success" @onclick="Vibrar">Haptic Feedback</button>
-        <button class="btn btn-info" @onclick="MostrarMainButton">Mostrar Botón Principal</button>
-        <button class="btn btn-secondary" @onclick="OcultarMainButton">Ocultar Botón Principal</button>
-    </div> *@
-
-
-    @if (!string.IsNullOrEmpty(_resultado))
-    {
-        <div class="card resultado">
-            <h3>✅ Resultado</h3>
-            <p>@_resultado</p>
-        </div>
-    }
 </div>
 
         
 @code {
-    private string _nombre = "Usuario";
-    private bool _esTelegram;
-    private string _inputNombre = "";
-    private string _servicio = "";
-    private string _prioridad = "";
-    private string _descripcion = "";
-    private string _resultado = "";
+    private long? _telegramUserId;
+    private string _name = "Usuario";
+    private bool _isTelegram;
     private bool _isLoading = true;
-
+    private string today = DateTime.Now.ToString("yyyy-MM-dd");
     private List<Models.MatchPredictionModel> _matches = new();
+    private List<Models.UpdatedPredictionModel> _predictions = new();
 
     protected override async Task OnInitializedAsync()
     {
-        try
-        {
-            string today = DateTime.Now.ToString("yyyy-MM-dd");
-            var matches = await OraculoApi.GetMatchesToday(today);
-            if (matches.Any())
-            {
-                _matches = matches.Select(m => new Models.MatchPredictionModel
-                {
-                    Id = m.Id,
-                    Scheduling = m.MatchTime,
-                    IsDone = m.IsDone,
-                    Home = new Models.TeamModel { Id = m.HomeId, Name = m.Home, Flag = m.HomeFlag, Goals = m.HomeGoals },
-                    Away = new Models.TeamModel { Id = m.AwayId, Name = m.Away, Flag = m.AwayFlag, Goals = m.AwayGoals },
-                    Prediction = new Models.PredictionModel()
-                }).ToList();
-            }
-        }
-        finally
-        {
-            _isLoading = false;
-        }
+        _isLoading = true;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender) return;
 
-        _esTelegram = await Telegram.IsAvailableAsync();
+        _isTelegram = await Telegram.IsAvailableAsync();
 
-        if (_esTelegram)
+        if (_isTelegram)
         {
             await Telegram.ReadyAsync();
 
             var user = await Telegram.GetUserAsync();
             if (user is not null)
-                _nombre = string.IsNullOrEmpty(user.FirstName) ? "Usuario" : user.FirstName;
-
-            Telegram.OnMainButtonClicked += async () =>
             {
-                // await EnviarFormulario();
-                await InvokeAsync(StateHasChanged);
-            };
-        }
+                _telegramUserId = user.Id;
+                _name = string.IsNullOrEmpty(user.FirstName) ? "Usuario" : user.FirstName;
+            }
 
-        StateHasChanged();
+            Telegram.OnMainButtonClicked += SendPredictionsAsync;
+            await Task.Delay(100);
+            await Telegram.ShowMainButtonAsync("ENVIAR PRONÓSTICO");
+        }
+        try
+        {
+            await GetCurrentMatchesByUserId(_telegramUserId.ToString()!, today);
+        }
+        finally
+        {
+            _isLoading = false;
+            StateHasChanged();
+        }
     }
 
-    
+    private async Task GetCurrentMatchesByUserId(string telegramId, string date)
+    {
+        var matches = await OraculoApi.GetMatchesTodayAsync(telegramId, date);
+        if (matches.Any())
+        {
+            _matches = matches.Select(m => new Models.MatchPredictionModel
+            {
+                Id = m.Id,
+                UserId = telegramId,
+                Scheduling = m.MatchTime,
+                IsDone = m.IsDone,
+                Home = new Models.TeamModel { Id = m.HomeId, Name = m.Home, Flag = m.HomeFlag, Goals = m.HomeGoals },
+                Away = new Models.TeamModel { Id = m.AwayId, Name = m.Away, Flag = m.AwayFlag, Goals = m.AwayGoals },
+                Prediction = new Models.PredictionModel { AwayGoals = m.AwayPrediction, HomeGoals = m.HomePrediction, Id = m.PredictionId, PredictedAt = m.PredictionDate }
+            }).ToList();
+        }
+    }
+
+    private async Task SendPredictionsAsync()
+    {
+        if (!_predictions.Any())
+        {
+            await Telegram.ShowAlertAsync("No has realizado ningún cambio en tus predicciones.");
+            return;
+        }
+        await Telegram.HapticNotificationAsync("success");
+        await OraculoApi.UpdatePredictionsAsync(_predictions);
+        await Telegram.ShowAlertAsync($"¡Tu predicción ha sido enviada con éxito, {_name}!");
+        await InvokeAsync(StateHasChanged);
+    }
+
     private async Task OnMatchSaved(Models.MatchPredictionModel match)
     {
-        Console.WriteLine($"Guardado: {match.Home} {match.Home.Goals} - {match.Away.Goals} {match.Away}");
-
-        // Si tienes TelegramService:
-        // await Telegram.HapticNotificationAsync("success");
-        // await Telegram.ShowAlertAsync($"✅ {match.Home} {match.HomeGoals} - {match.AwayGoals} {match.Away}");
+        Models.UpdatedPredictionModel prediction = new
+        (
+            match.Prediction.Id,
+            match.Id,
+            match.UserId,
+            match.Prediction.HomeGoals ?? 0,
+            match.Prediction.AwayGoals ?? 0,
+            DateTime.Now
+        );
+        var existingPrediction = _predictions.FirstOrDefault(p => p.Id == prediction.Id);
+        if (existingPrediction is not null)
+        {
+            _predictions.Remove(existingPrediction);
+        }
+        if (prediction.CreatedAt <= match.Scheduling.AddMinutes(1))
+        {
+            _predictions.Add(prediction);
+        }
     }
 
-
-    // private async Task MostrarAlerta()
-    // {
-    //     if (_esTelegram)
-    //         await Telegram.ShowAlertAsync("¡Hola desde Blazor WASM dentro de Telegram! 🚀");
-    //     else
-    //         _resultado = "⚠️ Las alertas nativas solo funcionan dentro de Telegram.";
-    // }
-
-    // private async Task MostrarConfirmacion()
-    // {
-    //     if (_esTelegram)
-    //     {
-    //         var confirmado = await Telegram.ShowConfirmAsync("¿Deseas enviar el formulario?");
-    //         _resultado = confirmado ? "✅ Confirmado" : "❌ Cancelado";
-    //     }
-    //     else
-    //     {
-    //         _resultado = "⚠️ Confirmaciones nativas solo funcionan dentro de Telegram.";
-    //     }
-    // }
-
-    // private async Task Vibrar()
-    // {
-    //     if (_esTelegram)
-    //     {
-    //         await Telegram.HapticImpactAsync("heavy");
-    //         await Telegram.HapticNotificationAsync("success");
-    //         _resultado = "📳 ¡Vibración enviada!";
-    //     }
-    //     else
-    //     {
-    //         _resultado = "⚠️ Haptic feedback solo funciona en Telegram móvil.";
-    //     }
-    // }
-
-    // private async Task MostrarMainButton()
-    // {
-    //     if (_esTelegram)
-    //         await Telegram.ShowMainButtonAsync("📤 Enviar Pronóstico");
-    //     else
-    //         _resultado = "ℹ️ El MainButton aparece en la parte inferior de Telegram.";
-    // }
-
-    // private async Task OcultarMainButton()
-    // {
-    //     if (_esTelegram)
-    //         await Telegram.HideMainButtonAsync();
-    // }
-
-    // private async Task EnviarFormulario()
-    // {
-    //     var datos = new
-    //     {
-    //         nombre = string.IsNullOrEmpty(_inputNombre) ? _nombre : _inputNombre,
-    //         servicio = _servicio,
-    //         prioridad = _prioridad,
-    //         descripcion = _descripcion
-    //     };
-
-    //     if (_esTelegram)
-    //     {
-    //         await Telegram.HapticNotificationAsync("success");
-    //         await Telegram.SendDataAsync(datos);
-    //         // SendData cierra la Mini App automáticamente
-    //     }
-
-    //     _resultado = $"📤 Enviado: {_servicio} | Prioridad: {_prioridad}";
-    // }
+    public void Dispose()
+    {
+        if (_isTelegram)
+        {
+            Telegram.OnMainButtonClicked -= SendPredictionsAsync;
+        }
+    }
 }

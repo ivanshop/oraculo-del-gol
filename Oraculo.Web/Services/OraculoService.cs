@@ -12,12 +12,12 @@ public class OraculoService
         _httpClient = httpClient;
     }
 
-    public async Task<List<MatchModel>> GetMatchesToday(string date)
+    public async Task<List<MatchModel>> GetMatchesTodayAsync(string telegramId, string date)
     {
         List<MatchModel> matches = new();
         try
         {
-            var response = await _httpClient.GetAsync($"matches/{date}");
+            var response = await _httpClient.GetAsync($"matches/{date}/seers/{telegramId}");
             if (response.IsSuccessStatusCode)
             {
                 matches = await response.Content.ReadFromJsonAsync<List<MatchModel>>() ?? new List<MatchModel>();
@@ -28,5 +28,39 @@ public class OraculoService
             Console.WriteLine($"Error fetching matches: {ex.Message}");
         }        
         return matches;
+    }
+
+    public async Task<bool> UpdatePredictionsAsync(List<Models.UpdatedPredictionModel> predictions)
+    {
+        try
+        {
+            var response = await _httpClient.PostAsJsonAsync($"predictions", predictions);
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error updating predictions: {ex.Message}");
+        }
+        return false;
+    }
+
+    public async Task<bool> GetIdentityAsync(List<Models.UpdatedPredictionModel> predictions)
+    {
+        try
+        {
+            var response = await _httpClient.PostAsJsonAsync($"predictions", predictions);
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error updating predictions: {ex.Message}");
+        }
+        return false;
     }
 }

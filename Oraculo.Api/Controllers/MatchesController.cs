@@ -17,10 +17,10 @@ public class MatchesController : ControllerBase
         _getMatchesIdUseCase = getMatchesIdUseCase;
     }
 
-    [HttpGet("{date}", Name = "GetCurrentMatches")]
-    public async Task<IActionResult> GetCurrentMatches([FromRoute] DateOnly? date)
+    [HttpGet("{date}/seers/{id}", Name = "GetCurrentMatches")]
+    public async Task<IActionResult> GetCurrentMatches([FromRoute] string id, [FromRoute] DateOnly date)
     {
-        var response = await _getMatchesIdUseCase.ExecuteAsync(date);
+        var response = await _getMatchesIdUseCase.ExecuteAsync(id, date);
         return response.ToHttpResult();
     }
 }

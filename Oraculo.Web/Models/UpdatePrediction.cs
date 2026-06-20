@@ -1,6 +1,6 @@
-namespace Oraculo.Application.Requests;
+﻿namespace Oraculo.Web.Models;
 
-public record UpdatePredictionRequest(
+public record UpdatedPredictionModel(
     int Id,
     int MatchId,
     string UserId,

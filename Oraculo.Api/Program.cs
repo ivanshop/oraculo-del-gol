@@ -1,11 +1,13 @@
 using Oraculo.Application;
+using Oraculo.Application.Interfaces.TelegramBot;
 using Oraculo.Infrastructure;
+using Oraculo.Infrastructure.External;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
-
+builder.Services.AddHttpClient<ITelegramBotClient, TelegramBotClient>();
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 

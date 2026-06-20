@@ -25,10 +25,8 @@ public class UpdatePredictionUseCase : IUpdatePredictionUseCase
                 result = new SimpleResponse(isSuccess);
                 return Result<SimpleResponse>.Success(CodeResponseType.Created, result);
             }
-
-            return Result<SimpleResponse>.Failure(CodeResponseType.Conflict, "Predictions not saved.");
+            return Result<SimpleResponse>.Failure(CodeResponseType.Conflict, "Predictions not updated.");
         }
-
         return Result<SimpleResponse>.Failure(CodeResponseType.BadRequest, "Predictions are required.");
     }
 }

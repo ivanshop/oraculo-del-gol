@@ -26,8 +26,8 @@ public class PredictionsController : ControllerBase
         return response.ToHttpResult();
     }
 
-    [HttpPost(Name = "AddPrediction")]
-    public async Task<IActionResult> AddPredictionsAsync(List<UpdatePredictionRequest> request)
+    [HttpPost(Name = "UpdatePrediction")]
+    public async Task<IActionResult> UpdatePredictionsAsync(List<UpdatePredictionRequest> request)
     {
         var response = await _updatePredictionUseCase.ExecuteAsync(request);
         return response.ToHttpResult();
