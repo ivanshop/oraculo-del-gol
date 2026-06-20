@@ -1,6 +1,6 @@
 @HostAddress = https://localhost:7064
 
-GET {{HostAddress}}/matches/seers/76244189/matches?date=2026-06-17
+GET {{HostAddress}}/matches/2026-06-19/seers/46705735
 Accept: application/json
 
 ###

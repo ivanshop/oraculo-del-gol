@@ -26,10 +26,13 @@ namespace Oraculo.Infrastructure.External
             {
                 chat_id = chatId,
                 text = message,
+                parse_mode = "Markdown",
                 reply_markup = new
                 {
-                    inline_keyboard = new[] {
-                    new[] { new { text = buttonText, url = buttonUrl } }
+                    inline_keyboard = new[]
+                    {
+                        new[] { new { text = buttonText, url = buttonUrl } 
+                    }
                 }
                 }
             };

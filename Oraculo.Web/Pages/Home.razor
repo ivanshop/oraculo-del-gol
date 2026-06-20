@@ -9,6 +9,12 @@
 @inject TelegramHelper Telegram
 
 <div class="container">
+    <div class="alert alert-warning text-wrap/break-all small">
+        <strong>🔍 Debug Frontend:</strong><br />
+        Es Telegram: @_isTelegram <br />
+        Telegram ID: @(string.IsNullOrEmpty(_telegramUserId?.ToString()) ? "⚠️ VACÍO / NULL" : _telegramUserId) <br />
+        Nombre: @_name
+    </div>
     <div class="card rounded-5">
         <h3 class="text-center">📝 Partidos del día</h3>
         @if (_isLoading)

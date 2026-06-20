@@ -18,8 +18,9 @@ public class MatchesController : ControllerBase
     }
 
     [HttpGet("{date}/seers/{id}", Name = "GetCurrentMatches")]
-    public async Task<IActionResult> GetCurrentMatches([FromRoute] string id, [FromRoute] DateOnly date)
+    public async Task<IActionResult> GetCurrentMatches([FromRoute] DateOnly date, [FromRoute] string id)
     {
+        _logger.LogInformation("Received request for matches: {Id} on {Date}", id, date);
         var response = await _getMatchesIdUseCase.ExecuteAsync(id, date);
         return response.ToHttpResult();
     }
