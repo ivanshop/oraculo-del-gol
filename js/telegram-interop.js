@@ -15,16 +15,24 @@
     },
 
     getUser: function () {
-        if (this.isAvailable() && window.Telegram.WebApp.initDataUnsafe?.user) {
-            const user = window.Telegram.WebApp.initDataUnsafe.user;
-            return JSON.stringify({
+        if (
+            window.Telegram &&
+            window.Telegram.WebApp &&
+            window.Telegram.WebApp.initDataUnsafe &&
+            window.Telegram.WebApp.initDataUnsafe.user) {
+
+            var user = window.Telegram.WebApp.initDataUnsafe.user;
+
+            return {
                 id: user.id,
                 firstName: user.first_name || "",
                 lastName: user.last_name || "",
                 username: user.username || "",
                 languageCode: user.language_code || ""
-            });
+            };
         }
+
+        console.log("⚠️ [JS] El objeto user de Telegram no está disponible.");
         return null;
     },
 
