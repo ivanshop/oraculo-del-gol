@@ -64,27 +64,25 @@
         if (_isTelegram)
         {
             await Telegram.ReadyAsync();
+            await Task.Delay(250);
 
             var user = await Telegram.GetUserAsync();
-            if (user is not null)
+            if (user is not null && user.Id != 0)
             {
                 _telegramUserId = user.Id;
                 _name = string.IsNullOrEmpty(user.FirstName) ? "Usuario" : user.FirstName;
+                await GetCurrentMatchesByUserId(_telegramUserId.ToString()!, today);
+            }
+            else
+            {
+                _name = "Error al leer user de JS";
             }
 
             Telegram.OnMainButtonClicked += SendPredictionsAsync;
-            await Task.Delay(100);
             await Telegram.ShowMainButtonAsync("ENVIAR PRONÓSTICO");
         }
-        try
-        {
-            await GetCurrentMatchesByUserId(_telegramUserId.ToString()!, today);
-        }
-        finally
-        {
-            _isLoading = false;
-            StateHasChanged();
-        }
+        _isLoading = false;
+        StateHasChanged();
     }
 
     private async Task GetCurrentMatchesByUserId(string telegramId, string date)

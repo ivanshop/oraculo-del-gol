@@ -111,10 +111,7 @@ public class TelegramHelper(IJSRuntime js) : IAsyncDisposable
     }
 
     public async Task<TelegramUserModel?> GetUserAsync()
-    {
-        var json = await js.InvokeAsync<string?>("TelegramInterop.getUser");
-        return json is null ? null : JsonSerializer.Deserialize<TelegramUserModel>(json);
-    }
+        => await js.InvokeAsync<TelegramUserModel?>("TelegramInterop.getUser");
 
     public async Task<string> GetColorSchemeAsync()
         => await js.InvokeAsync<string>("TelegramInterop.getColorScheme");
