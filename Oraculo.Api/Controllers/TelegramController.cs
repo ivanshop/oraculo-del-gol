@@ -18,7 +18,7 @@ public class TelegramController : ControllerBase
         _commands = commands.ToDictionary(c => c.CommandName, c => c);
     }
 
-    [HttpGet("webhook", Name = "Webhook")]
+    [HttpPost("webhook", Name = "Webhook")]
     public async Task<IActionResult> HandleUpdate([FromBody] TelegramUpdate update)
     {
         _logger.LogInformation("Received Telegram update: {Update}", JsonSerializer.Serialize(update));

@@ -9,12 +9,6 @@
 @inject TelegramHelper Telegram
 
 <div class="container">
-    <div class="alert alert-warning text-wrap/break-all small">
-        <strong>🔍 Debug Frontend:</strong><br />
-        Es Telegram: @_isTelegram <br />
-        Telegram ID: @(string.IsNullOrEmpty(_telegramUserId?.ToString()) ? "⚠️ VACÍO / NULL" : _telegramUserId) <br />
-        Nombre: @_name
-    </div>
     <div class="card rounded-5">
         <h3 class="text-center">📝 Partidos del día</h3>
         @if (_isLoading)
@@ -67,6 +61,10 @@
             await Task.Delay(250);
 
             var user = await Telegram.GetUserAsync();
+
+            //TODO: Remove or comment the following line before push
+            // user = new Models.TelegramUserModel { Id = 46705735, FirstName = "Test User" };
+
             if (user is not null && user.Id != 0)
             {
                 _telegramUserId = user.Id;

@@ -12,11 +12,11 @@ public class PredictCommand : ITelegramCommand
         _botClient = botClient;
     }
 
-    public string CommandName => "/predict";
+    public string CommandName => "/today";
 
     public async Task ExecuteAsync(long chatId, string username)
     {
         string mensaje = $"¡Hola @{username}! 🔮 ¿Listo para ver más allá de lo evidente? Abre el Oráculo del Gol aquí abajo:";
-        await _botClient.SendButtonMessageAsync(chatId, mensaje, "🔮 Abrir Oráculo", "https://t.me/OraculoDelGolBot/predict");
+        await _botClient.SendButtonMessageAsync(chatId, mensaje, "🔮 Abrir Oráculo", "https://ivanshop.github.io/oraculo-del-gol/");
     }
 }
