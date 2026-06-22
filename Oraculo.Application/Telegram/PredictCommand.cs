@@ -17,6 +17,6 @@ public class PredictCommand : ITelegramCommand
     public async Task ExecuteAsync(long chatId, string username)
     {
         string mensaje = $"¡Hola @{username}! 🔮 ¿Listo para ver más allá de lo evidente? Abre el Oráculo del Gol aquí abajo:";
-        await _botClient.SendButtonMessageAsync(chatId, mensaje, "🔮 Abrir Oráculo", "https://ivanshop.github.io/oraculo-del-gol/");
+        await _botClient.SendButtonMessageAsync(chatId, mensaje, "🔮 Abrir Oráculo", "t.me/OraculoDelGolBot/play");
     }
 }

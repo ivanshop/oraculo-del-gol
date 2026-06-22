@@ -121,8 +121,11 @@
             match.Prediction.Id,
             match.Id,
             match.UserId,
+            match.Home.Flag,
+            match.Away.Flag,
             match.Prediction.HomeGoals ?? 0,
             match.Prediction.AwayGoals ?? 0,
+            _name,
             DateTime.Now
         );
         var existingPrediction = _predictions.FirstOrDefault(p => p.Id == prediction.Id);

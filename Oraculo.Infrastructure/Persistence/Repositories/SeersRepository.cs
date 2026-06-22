@@ -15,11 +15,16 @@ public class SeersRepository : ISeersRepository
 
     public async Task<List<RankingItemResponse>> GetRankingAsync()
     {
-        return await _context.Predictions
-            .Where(p => p.Match.HomeTeamGoals == p.Home && p.Match.AwayTeamGoals == p.Away)
+        var ranking = await _context.Predictions
+            .Where(p => p.Match.HomeTeamGoals == p.Home && p.Match.AwayTeamGoals == p.Away && p.Match.IsEnded == 1)
             .GroupBy(p => p.Seer.Nick)
-            .Select(g => new RankingItemResponse(g.Key, g.Count()))
+            .Select(g => new { Nick = g.Key, Points = g.Count(), PredictedAt = g.Average(p => p.CreatedAt.Value.Ticks) })
             .OrderByDescending(x => x.Points)
+            .ThenBy(x => x.PredictedAt)
             .ToListAsync();
+
+        return ranking
+            .Select(r => new RankingItemResponse(r.Nick, r.Points))
+            .ToList();
     }
 }

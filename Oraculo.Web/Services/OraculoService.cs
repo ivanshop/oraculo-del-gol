@@ -30,24 +30,7 @@ public class OraculoService
         return matches;
     }
 
-    public async Task<bool> UpdatePredictionsAsync(List<Models.UpdatedPredictionModel> predictions)
-    {
-        try
-        {
-            var response = await _httpClient.PostAsJsonAsync($"predictions", predictions);
-            if (response.IsSuccessStatusCode)
-            {
-                return true;
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error updating predictions: {ex.Message}");
-        }
-        return false;
-    }
-
-    public async Task<bool> GetIdentityAsync(List<Models.UpdatedPredictionModel> predictions)
+    public async Task<bool> UpdatePredictionsAsync(List<UpdatedPredictionModel> predictions)
     {
         try
         {

@@ -31,11 +31,14 @@ namespace Oraculo.Infrastructure.External
                 {
                     inline_keyboard = new[]
                     {
-                        new[] { new { text = buttonText, url = buttonUrl } 
+                        new[]
+                        {
+                            new { text = buttonText, url = buttonUrl }
+                        }
                     }
                 }
-                }
             };
+
             await _httpClient.PostAsJsonAsync(_baseUrl, payload);
         }
     }

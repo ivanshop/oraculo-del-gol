@@ -1,9 +1,9 @@
 ﻿.match-card {
     background: var(--tg-theme-secondary-bg-color, #fafafa);
-    border-radius: 14px;
-    padding: 14px 16px;
+    border-radius: 1rem;
+    padding: 1rem 1rem;
     margin-bottom: 10px;
-    cursor: pointer;
+    cursor: default;
     transition: all 0.25s ease;
     border-left: 4px solid transparent;
     user-select: none;
@@ -15,7 +15,7 @@
     }
 
     .match-card.done {
-        cursor: default;
+        cursor: pointer;
         border-left-color: #34c759;
         background: var(--tg-theme-secondary-bg-color, #f0faf2);
     }
@@ -58,22 +58,11 @@
 }
 
 .separator-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding-top: 8px;
+    padding-top: 1rem;
+    display: block;
+    text-align: center;
 }
 
-/*.schedule-match {
-    font-size: 0.6rem;
-    font-weight: 700;
-    color: var(--tg-theme-hint-color, #888);
-    padding: 4px 8px;
-    border-radius: 6px;
-    background: var(--tg-theme-bg-color, rgba(0, 0, 0, 0.05));
-    white-space: nowrap;
-}
-*/
 .match-status {
     font-size: 0.6rem;
     font-weight: 700;

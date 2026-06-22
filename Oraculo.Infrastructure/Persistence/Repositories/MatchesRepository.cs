@@ -15,10 +15,10 @@ public class MatchesRepository : IMatchesRepository
 
     public async Task<List<MatchResponse>> GetMatchesByDate(string userTelegramId, DateTime date)
     {
-        var startDate = date.Date.AddHours(5);
-        var endDate = startDate.AddHours(25);
-        var countries = await _context.Countries.ToListAsync();
-        var matches = await _context
+        DateTime startDate = date.Date.AddHours(5);
+        DateTime endDate = startDate.AddHours(25);
+        List<Entities.Country> countries = await _context.Countries.ToListAsync();
+        List<Entities.Match> matches = await _context
             .Matches
             .Include(m => m.Predictions.Where(p => p.Seer.TelegramId == userTelegramId))
                 .ThenInclude(p => p.Seer)

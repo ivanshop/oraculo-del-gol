@@ -1,22 +1,21 @@
 ﻿@using Oraculo.Web.Models
 
-<div class="match-card @(_isExpanded ? "expanded" : "") @(Match.IsDone ? "done" : "")" @onclick="ToggleAccordion">
+<div class="match-card @(_isExpanded ? "expanded" : "") @(Match.Home.Goals == Match.Prediction.HomeGoals && Match.Away.Goals == Match.Prediction.AwayGoals ? "done" : "")" @onclick="ToggleAccordion">
 
     <div class="match-header">
         <div class="team-container">
             <div class="flag-score">
-                <span class="prediction">@(Match.Prediction.HomeGoals?.ToString() ?? "-")</span>
                 <div class="fi fi-@Match.Home.Flag"></div>
-                @if (Match.IsDone)
-                {
-                    <span class="score">@Match.Home.Goals</span>
-                }
+                <div>
+                    <div class="score">@Match.Home.Goals</div>
+                    <div class="prediction">@(Match.Prediction.HomeGoals?.ToString() ?? "-")</div>
+                </div>
             </div>
             <span class="team-name">@Match.Home.Name</span>
         </div>
 
         <div class="separator-container">
-            @if (GetMatchStatus() == "AHORA")
+            @if (GetMatchStatus() == "NOW")
             {
                 <div class="badge-live">@Match.Scheduling.ToString("HH:mm")</div>
             }
@@ -24,16 +23,19 @@
             {
                 <div class="match-status">@Match.Scheduling.ToString("HH:mm")</div>
             }
+            @if (GetMatchStatus() == "NOW" || GetMatchStatus() == "END")
+            {
+                <div>🔒</div>
+            }
         </div>
 
         <div class="team-container">
             <div class="flag-score">
-                @if (Match.IsDone)
-                {
-                    <span class="score">@Match.Away.Goals</span>
-                }
+                <div>
+                    <div class="score">@Match.Away.Goals</div>
+                    <div class="prediction">@(Match.Prediction.AwayGoals?.ToString() ?? "-")</div>
+                </div>
                 <div class="fi fi-@Match.Away.Flag"></div>
-                <span class="prediction">@(Match.Prediction.AwayGoals?.ToString() ?? "-")</span>
             </div>
             <span class="team-name">@Match.Away.Name</span>
         </div>
@@ -56,9 +58,11 @@
                 </div>
             </div>
 
-            <button class="btn-save" @onclick="AssignScore" disabled="@(!IsValid)">
-                Asignar Pronóstico
-            </button>
+            <div class="mx-3 px-3">
+                <button class="btn-save" @onclick="AssignScore" disabled="@(!IsValid)">
+                    Asignar Pronóstico
+                </button>
+            </div>
         </div>
     }
 </div>
@@ -86,10 +90,10 @@
     private string GetMatchStatus()
     {
         if (Match.IsDone)
-            return "FIN";
+            return "END";
 
         if (IsMatchStarted)
-            return "AHORA";
+            return "NOW";
 
         return "VS.";
     }
