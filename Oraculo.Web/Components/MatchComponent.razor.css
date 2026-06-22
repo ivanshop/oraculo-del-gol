@@ -5,7 +5,6 @@
     margin-bottom: 10px;
     cursor: default;
     transition: all 0.25s ease;
-    border-left: 4px solid transparent;
     user-select: none;
 }
 
@@ -28,7 +27,7 @@
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: 12px;
+    gap: 0.1rem;
     font-size: 1.6rem;
 }
 
@@ -36,7 +35,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     flex: 1;
 }
 
@@ -120,7 +119,7 @@
 
 .accordion-body {
     margin-top: 14px;
-    padding-top: 14px;
+    padding-top: 6px;
     border-top: 1px solid var(--tg-theme-hint-color, #e0e0e0);
     animation: slideDown 0.25s ease-out;
 }
@@ -196,7 +195,7 @@
 .btn-save {
     display: block;
     width: 100%;
-    margin-top: 14px;
+    margin-top: 1rem;
     padding: 12px;
     border: none;
     border-radius: 10px;

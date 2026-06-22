@@ -11,7 +11,7 @@ public class UpdatePredictionUseCase : IUpdatePredictionUseCase
 {
     private readonly IPredictionsRepository _predictionsRepository;
     private readonly ITelegramBotClient _telegramBot;
-    private readonly long _grupoId = -1003756446922;
+    private readonly long _grupoId = -5561189421;
     public static readonly Dictionary<string, string> Flags = new(StringComparer.OrdinalIgnoreCase)
     {
         ["mx"] = "🇲🇽", ["us"] = "🇺🇸", ["ca"] = "🇨🇦", ["ar"] = "🇦🇷", ["br"] = "🇧🇷", ["uy"] = "🇺🇾", ["ec"] = "🇪🇨", ["py"] = "🇵🇾",
