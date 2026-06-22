@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using Oraculo.Api.Exntesions;
 using Oraculo.Application.Interfaces;
 using Oraculo.Application.Requests;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Oraculo.Api.Controllers;
 

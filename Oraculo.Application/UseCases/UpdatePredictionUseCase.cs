@@ -43,14 +43,12 @@ public class UpdatePredictionUseCase : IUpdatePredictionUseCase
                 sb.AppendLine($"🔮 *¡Predicción Registrada!* 🏟️");
                 sb.AppendLine($"{usuario} ha pronosticado:");
                 sb.AppendLine();
-
                 foreach (var prediction in request)
                 {
                     string homeFlag = Flags.ContainsKey(prediction.HomeTeamIsoCode) ? Flags[prediction.HomeTeamIsoCode] : "🏳️";
                     string awayFlag = Flags.ContainsKey(prediction.AwayTeamIsoCode) ? Flags[prediction.AwayTeamIsoCode] : "🏳️";
-                    sb.AppendLine($"🔹{homeFlag} *{prediction.HomeGoals} - {prediction.AwayGoals}* {awayFlag}");
+                    sb.AppendLine($"{homeFlag} *{prediction.HomeGoals} - {prediction.AwayGoals}* {awayFlag}");
                 }
-
                 sb.AppendLine();
                 sb.AppendLine($"_¡Buena suerte!_");
                 await _telegramBot.SendMessageAsync(_grupoId, sb.ToString());

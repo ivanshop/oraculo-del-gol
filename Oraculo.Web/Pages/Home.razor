@@ -20,6 +20,15 @@
                 <p class="mt-2">Cargando partidos...</p>
             </div>
         }
+        @if (_isSending)
+        {
+            <div class="position-fixed top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center"
+                 style="background-color: rgba(0, 0, 0, 0.7); z-index: 9999; color: white;">
+                <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;"></div>
+                <h5 class="fw-bold">Guardando pronósticos...</h5>
+                <p class="small text-muted text-center px-4">Procesando tus datos y notificando al grupo, no cierres la app.</p>
+            </div>
+        }
         else if (!_matches.Any())
         {
             <p class="text-center py-3">No hay partidos programados para hoy.</p>
@@ -40,6 +49,7 @@
     private string _name = "Usuario";
     private bool _isTelegram;
     private bool _isLoading = true;
+    private bool _isSending = false;
     private string today = DateTime.Now.ToString("yyyy-MM-dd");
     private List<Models.MatchPredictionModel> _matches = new();
     private List<Models.UpdatedPredictionModel> _predictions = new();
@@ -63,7 +73,7 @@
             var user = await Telegram.GetUserAsync();
 
             //TODO: Remove or comment the following line before push
-            // user = new Models.TelegramUserModel { Id = 46705735, FirstName = "Test User" };
+            user = new Models.TelegramUserModel { Id = 46705735, FirstName = "Test User" };
 
             if (user is not null && user.Id != 0)
             {
@@ -108,10 +118,31 @@
             await Telegram.ShowAlertAsync("No has realizado ningún cambio en tus predicciones.");
             return;
         }
-        await Telegram.HapticNotificationAsync("success");
-        await OraculoApi.UpdatePredictionsAsync(_predictions);
-        await Telegram.ShowAlertAsync($"¡Tu predicción ha sido enviada con éxito, {_name}!");
-        await InvokeAsync(StateHasChanged);
+        try
+        {
+            _isSending = true;
+            await InvokeAsync(StateHasChanged);
+            await Telegram.HapticNotificationAsync("success");
+            bool result = await OraculoApi.UpdatePredictionsAsync(_predictions);
+            _isSending = false;
+            await InvokeAsync(StateHasChanged);
+            if (result)
+            {
+                await Telegram.ShowAlertAsync($"¡Tu predicción ha sido enviada con éxito, {_name}!");
+                await Task.Delay(100);
+                await Telegram.CloseAsync();
+            }
+            else
+            {
+                await Telegram.ShowAlertAsync("El servidor no devolvió una respuesta válida.");
+            }
+        }
+        catch (Exception ex)
+        {
+            _isSending = false;
+            await InvokeAsync(StateHasChanged);
+            await Telegram.ShowAlertAsync($"Error al enviar: {ex.Message}");
+        }
     }
 
     private async Task OnMatchSaved(Models.MatchPredictionModel match)
